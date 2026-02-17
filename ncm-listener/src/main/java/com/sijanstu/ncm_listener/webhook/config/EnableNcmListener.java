@@ -17,9 +17,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-// Component scan should target this library's webhook package so the annotation
-// reliably enables the beans provided by the ncm-listener module when placed
-// on a consuming application's @SpringBootApplication class.
 @ComponentScan(basePackages = "com.sijanstu.ncm_listener.webhook")
 @ConditionalOnProperty(name = "ncm.listener.enabled", havingValue = "true", matchIfMissing = true)
 public @interface EnableNcmListener {

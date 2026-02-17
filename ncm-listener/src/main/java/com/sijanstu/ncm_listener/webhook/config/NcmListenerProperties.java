@@ -31,6 +31,7 @@ public class NcmListenerProperties {
     public static class Webhook {
         private String endpoint = "/api/webhooks/ncm";
         private int maxOrderIdsPerRequest = 100;
+        private String secret;
     }
 
     @Getter

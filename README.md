@@ -36,12 +36,14 @@ Default listen address: http://localhost:8080
 
 ## Webhook API
 
-Endpoint
+Endpoints
 
-POST /api/webhooks/ncm
+- **Standard**: `POST /api/webhooks/ncm`
+- **With Secret**: `POST /api/webhooks/ncm?secret=your-secret-key`
 
 Behavior
 - Returns 202 Accepted when the webhook is accepted for asynchronous processing.
+- Returns 403 Forbidden if a secret is configured but missing or incorrect in the query string.
 - Returns 503 Service Unavailable if the listener is disabled via configuration.
 - Validation errors (missing order id(s) or invalid JSON) result in 400 Bad Request.
 
@@ -73,8 +75,18 @@ Either `order_id` or `order_ids` must be present.
 
 Example curl
 
+**1. Standard request (no secret configured):**
+
 ```bash
-curl -X POST http://localhost:8080/api/webhooks/ncm \
+curl -X POST "http://localhost:8080/api/webhooks/ncm" \
+  -H "Content-Type: application/json" \
+  -d '{"order_id":"ORD-001","status":"picked_up","event":"PICKUP_COMPLETED","timestamp":"2026-02-17T10:00:00Z"}'
+```
+
+**2. Protected request (with secret configured):**
+
+```bash
+curl -X POST "http://localhost:8080/api/webhooks/ncm?secret=your-secret-key" \
   -H "Content-Type: application/json" \
   -d '{"order_id":"ORD-001","status":"picked_up","event":"PICKUP_COMPLETED","timestamp":"2026-02-17T10:00:00Z"}'
 ```
@@ -87,6 +99,7 @@ Application-level properties (set in `vendor-service/src/main/resources/applicat
 
 - `ncm.listener.enabled` (boolean, default true)
 - `ncm.listener.webhook.endpoint` (string, default `/api/webhooks/ncm`)
+- `ncm.listener.webhook.secret` (string, optional) — Secret for ?secret= params
 - `ncm.listener.webhook.max-order-ids` (integer — maps to property `maxOrderIdsPerRequest`)
 - `ncm.listener.events.publish-events` (boolean)
 - `ncm.listener.logging.log-all-webhooks` (boolean)
@@ -121,6 +134,7 @@ The `@EnableNcmListener` annotation triggers component scan for the library webh
 
 - 202 Accepted: webhook accepted and processed asynchronously.
 - 400 Bad Request: payload validation failed (missing order id(s) or malformed JSON).
+- 403 Forbidden: secret mismatch or missing query parameter.
 - 503 Service Unavailable: listener disabled (`ncm.listener.enabled=false`).
 - Check logs for `com.sijanstu.ncm_listener` for processing details.
 

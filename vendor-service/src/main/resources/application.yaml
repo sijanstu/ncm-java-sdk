@@ -41,6 +41,7 @@ logging:
 ncm:
   listener:
     webhook:
-      endpoint: /api/webhooks/ncm
+      endpoint: ${ncm-webhook-endpoint:/api/webhooks/ncm}
+      secret: ${ncm-webhook-secret:default-secret}
     logging:
-      log-all-webhooks: false
+      log-all-webhooks: ${ncm-log-all-webhooks:true}

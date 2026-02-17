@@ -3,6 +3,9 @@ package com.sijanstu.ncm_listener.webhook.domain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * NCM webhook event types
  */
@@ -17,8 +20,7 @@ public enum WebhookEventType {
 
     private final String eventCode;
 
-    // Fast lookup map for event codes (case-insensitive)
-    private static final java.util.Map<String, WebhookEventType> LOOKUP = new java.util.HashMap<>();
+    private static final Map<String, WebhookEventType> LOOKUP = new HashMap<>();
 
     static {
         for (WebhookEventType t : values()) {

@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -35,7 +36,15 @@ public class NcmWebhookController {
      * @param payload Webhook payload
      */
     @PostMapping
-    public ResponseEntity<Void> handleWebhook(@Valid @NotNull @RequestBody NcmWebhookPayloadDto payload) {
+    public ResponseEntity<Void> handleWebhook(
+            @Valid @NotNull @RequestBody NcmWebhookPayloadDto payload,
+            @RequestParam(value = "secret", required = false) String providedSecret) {
+
+        if (!isSecretValid(providedSecret)) {
+            log.warn("Invalid or missing secret query parameter");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         if (!properties.isEnabled()) {
             log.debug("NCM Listener disabled - rejecting webhook");
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
@@ -51,4 +60,8 @@ public class NcmWebhookController {
         }
     }
 
+    private boolean isSecretValid(String providedSecret) {
+        String configuredSecret = properties.getWebhook().getSecret();
+        return configuredSecret == null || configuredSecret.isBlank() || configuredSecret.equals(providedSecret);
+    }
 }
