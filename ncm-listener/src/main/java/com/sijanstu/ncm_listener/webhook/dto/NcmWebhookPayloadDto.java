@@ -1,6 +1,7 @@
 package com.sijanstu.ncm_listener.webhook.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sijanstu.ncm_listener.webhook.validation.ValidWebhookPayload;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import java.time.Instant;
  * NCM webhook payload.
  * Assumes valid data from NCM (validation errors are not returned).
  */
+@ValidWebhookPayload
 @Getter
 @Setter
 @NoArgsConstructor

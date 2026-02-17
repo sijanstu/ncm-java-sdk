@@ -17,6 +17,15 @@ public enum WebhookEventType {
 
     private final String eventCode;
 
+    // Fast lookup map for event codes (case-insensitive)
+    private static final java.util.Map<String, WebhookEventType> LOOKUP = new java.util.HashMap<>();
+
+    static {
+        for (WebhookEventType t : values()) {
+            LOOKUP.put(t.eventCode.toLowerCase(), t);
+        }
+    }
+
     /**
      * Parse event code to WebhookEventType.
      * Returns null for unknown codes (doesn't throw).
@@ -28,13 +37,6 @@ public enum WebhookEventType {
         if (code == null || code.trim().isEmpty()) {
             return null;
         }
-
-        for (WebhookEventType type : values()) {
-            if (type.eventCode.equalsIgnoreCase(code)) {
-                return type;
-            }
-        }
-
-        return null;
+        return LOOKUP.get(code.trim().toLowerCase());
     }
 }

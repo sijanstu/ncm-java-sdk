@@ -1,39 +1,9 @@
-# Spring Boot Configuration
-spring:
-  application:
-    name: ncm-listener
-
-# Server Configuration
-server:
-  port: 8080
-  servlet:
-    context-path: /
-
-# NCM Listener Configuration - Minimal and Essential
 ncm:
   listener:
-    # Enable or disable NCM Listener
     enabled: true
-
-    # Webhook endpoint configuration
     webhook:
-      # URL endpoint where webhooks will be received
       endpoint: /api/webhooks/ncm
-
-    # Event publishing configuration
     events:
-      # Publish Spring events for vendor service to listen
       publish-events: true
-
-    # Logging configuration
     logging:
-      # Log all incoming webhooks
       log-all-webhooks: true
-
-# Logging Configuration
-logging:
-  level:
-    com.sijanstu.autowhats: DEBUG
-    org.springframework.web: INFO
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
